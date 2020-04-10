@@ -6,10 +6,6 @@ import spark.Filter;
 
 import java.util.HashMap;
 
-// compile with -encoding UTF8 -classpath .;C:/Users/Leo/BunchOfJars/* -sourcepath .
-// run with
-// java -classpath .;C:/Users/Leo/BunchOfJars/*;C:/Users/Leo/BunchOfJars/jetty/*;  SparkServer
-
 
 public class SparkServer {
 	public static void main(String[] args) {
