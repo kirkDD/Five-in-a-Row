@@ -28,7 +28,9 @@ public class SparkServer {
             @Override
             public void handle(Request request, Response response) {
                 corsHeaders.forEach(response::header);
-                System.out.print("___applying header___");
+                System.out.print("___Client IP: ");
+                System.out.print(request.ip());
+                System.out.print(" -> ");
                 System.out.println(request.url());
             }
         };
@@ -55,6 +57,13 @@ public class SparkServer {
         // get board 
         get("/getGameBoard", (req, res) -> {
             res.body(gson.toJson(game.getBoard()));
+            res.type("application/json");
+            return "";
+        });
+
+        // get board as list
+        get("/getGameBoardAsList", (req, res) -> {
+            res.body(gson.toJson(game.getBoardAsList()));
             res.type("application/json");
             return "";
         });

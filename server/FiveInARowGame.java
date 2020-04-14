@@ -2,11 +2,15 @@
 
 import java.lang.Math;
 import java.lang.StringBuilder;
+import java.util.*;
 
 public class FiveInARowGame {
   
   	// the game board
 	private int[][] board;
+
+	// game board as a list
+	private Map<Integer, List<int[]>> boardAsList;
 
 	// 1 - player A
 	// -1 - player B
@@ -49,6 +53,9 @@ public class FiveInARowGame {
 		board = new int[boardSize][boardSize];
 		turn = 1;
 		gameState = 0;
+		boardAsList = new HashMap<Integer, List<int[]>>();
+		boardAsList.put(1, new ArrayList<int[]>());
+		boardAsList.put(-1, new ArrayList<int[]>());
 	}
 
 	/**
@@ -63,6 +70,7 @@ public class FiveInARowGame {
 		board = new int[board.length][board.length];
 		turn = 1;
 		gameState = 0;
+		boardAsList.clear();
 		return "good";
 	}
 
@@ -72,6 +80,12 @@ public class FiveInARowGame {
 	 */
 	public int[][] getBoard() {
 		return this.board;
+	}
+	/**
+	 * rep expose and return the board as list
+	 */
+	public Map<Integer, List<int[]>> getBoardAsList() {
+		return this.boardAsList;
 	}
 
 	/**
@@ -100,6 +114,7 @@ public class FiveInARowGame {
 		if (board[x][y] == 0 && turn == player) {
 			board[x][y] = player;
 			turn = -turn;
+			boardAsList.get(player).add(new int[]{x, y});
 			this.updateGameState();
 			return "good";
 		} 

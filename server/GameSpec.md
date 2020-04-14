@@ -1,4 +1,5 @@
 
+
 # How to play the game
 
 ## Talking to server via HTTP requests
@@ -13,7 +14,7 @@ The default URL
 		2. Error if it is not
 ---------------
 ### /getGameBoard
-Obtain the game's current state
+Obtain the game's current board as a 2D array of integers
  - Request (none)
 - Response (JSON) 
 
@@ -24,6 +25,17 @@ Obtain the game's current state
 		1. 0 for open positions
 		2. -1 for player A
 		3. 1 for player B 
+			
+---------------
+### /getGameBoardAsList
+Obtain the game's current board as Map<Integer, List<int[2]>>
+ - Request (none)
+- Response (JSON) 
+
+	> response.json() 
+	
+		a map with player id as the key and
+		list of size 2 array as the values 
 			
 ---------------------------------------
 

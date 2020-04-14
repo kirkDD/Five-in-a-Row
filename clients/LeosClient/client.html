@@ -8,6 +8,7 @@
 
 	<button onclick="reset()">Reset</button>
 	<button onclick="getBoard()">getBoard</button>
+	<button onclick="getBoardAsList()">getBoardAsList</button>
 	<button onclick="getResult()">getResult</button>
 
 	<button onclick="GETMakeMove(1, 1, 1)">Move 1</button>
@@ -18,6 +19,7 @@
 		var serverURL = "http://localhost:4567";
 		var makeMoveURL = "/makeMove";
 		var getBoardURL = "/getGameBoard";
+		var getBoardAsListURL = "/getGameBoardAsList";
 		var resetURL = "/reset";
 		var getResultURL = "/getResult";
 
@@ -35,6 +37,15 @@
 
 		async function getBoard() {
     		var promise = await fetch(serverURL + getBoardURL);
+	    	if (!promise.ok) {
+	    		console.log(promise);
+	    	}
+    		var response = await promise.json();
+    		console.log(response);
+    		return response;
+    	}
+    	async function getBoardAsList() {
+    		var promise = await fetch(serverURL + getBoardAsListURL);
 	    	if (!promise.ok) {
 	    		console.log(promise);
 	    	}
