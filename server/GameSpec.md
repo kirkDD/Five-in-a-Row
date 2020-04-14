@@ -6,8 +6,8 @@
 ### /
 The default URL
 - Request (none)
-- Response (text)
-	> response.text()
+- Response (JSON)
+	> response.json()
 	
 		1. "hello world" if the server is running
 		2. Error if it is not
@@ -39,11 +39,10 @@ Make a move in the game
 	2. GET (EncodeURI)
 		Supply three arguments x, y, player
 			
-			var uri = "?x=12&y=12&player=-1"
-			encodeURI(uri)
+			var uri = encodeURI("?x=12&y=12&player=-1")
 
-- Response (text)
-	> response.text()
+- Response (JSON)
+	> response.json()
 		
 		1. "good" - if the move is successful, the move is made
 		2. "bad" - if it's not the player's turn or the move is illegal
@@ -69,8 +68,8 @@ See the current game state
 Reset the game
  - Request (none)
 			
- - Response (text)
-	>response.text()
+ - Response (JSON)
+	>response.json()
 		
 		1. "good", the game is reset
 		2. "bad", the game is not reset somehow

@@ -9,10 +9,16 @@
 	<button onclick="getBoard()">getBoard</button>
 	<button onclick="makeMoveReactWay()">makeMoveReactWay</button>
 
+	<button onclick="GETMakeMove(1)">Move 1</button>
+	<button onclick="GETMakeMove(-1)">Move -1</button>
+
+	<button onclick="reset()">reset</button>
+
 	<script type="text/javascript">
 		var serverURL = "http://localhost:4567";
 		var makeMoveURL = "/makeMove";
 		var getBoardURL = "/getGameBoard";
+		var resetURL = "/reset";
 		function httpReq() {
 			var httpReq = new XMLHttpRequest();
 			httpReq.open("POST", serverURL + makeMoveURL, true);
@@ -52,6 +58,28 @@
 			})
             .then(response => response.text())
             .then(data => console.log(data));
+        }
+
+        async function GETMakeMove(player) {
+        	var uri = encodeURI(serverURL + makeMoveURL + "?x=12&y=12&player=1");
+        	console.log(uri);
+    		var promise = await fetch(uri);
+    		if (!promise.ok) {
+	    		console.log(promise);
+	    	}
+	    	var response = await promise.json();
+    		console.log(response);
+        }
+
+
+        async function reset() {
+        	var promise = await fetch(serverURL + resetURL);
+	    	if (!promise.ok) {
+	    		console.log(promise);
+	    	}
+    		var response = await promise.text();
+    		console.log(response);
+    		return response;
         }
 
 	</script>

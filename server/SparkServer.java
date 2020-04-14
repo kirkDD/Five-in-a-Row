@@ -10,7 +10,7 @@ import java.util.*;
 import com.google.gson.Gson;
 import com.google.gson.*;
 
-
+// all response are JSON
 public class SparkServer {
 	public static void main(String[] args) {
 
@@ -28,10 +28,11 @@ public class SparkServer {
             @Override
             public void handle(Request request, Response response) {
                 corsHeaders.forEach(response::header);
-                System.out.println("___________________");
-                System.out.println(request.headers());
+                System.out.println("_________communication__________");
+                System.out.println(request.url());
+                System.out.println("Response is: ");
                 System.out.println(response.body());
-                System.out.println("___________________");
+                System.out.println("______________end_______________");
             }
         };
         Spark.afterAfter(filter); // Applies this filter even if there's a halt() or exception.
@@ -76,14 +77,16 @@ public class SparkServer {
             } catch (Exception e) {
                 System.out.println(e);
             }
-            return result;
+            res.body(gson.toJson(result));
+            res.type("application/json");
+            return "";
         });
 
         // second make move support get
         get("/makeMove", (req, res) -> {
             String xStr = req.queryParams("x");
             String yStr = req.queryParams("y");
-            String playerStr = req.queryParams("y");
+            String playerStr = req.queryParams("player");
             if (xStr == null || yStr == null || playerStr == null) {
                 return "Missing params, need x, y, player";
             }
@@ -99,7 +102,9 @@ public class SparkServer {
                 System.out.println(e);
                 return e.toString();
             }
-            return game.makeMove(x, y, player);
+            res.body(gson.toJson(game.makeMove(x, y, player)));
+            res.type("application/json");
+            return "";
         });
 
 
@@ -115,7 +120,9 @@ public class SparkServer {
 
         // reset game 
         get("/reset", (req, res) -> {
-            return game.reset();
+            res.body(gson.toJson(game.reset()));
+            res.type("test/json");
+            return "";
         });
 
 	}
