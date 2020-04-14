@@ -36,8 +36,7 @@ Make a move in the game
 	> response.text()
 		
 		1. "good" - if the move is successful, the move is made
-		2. "bad" - if it's not the player's turn
-		3. "no" - if the move is illegal, should resend move
+		2. "bad" - if it's not the player's turn or the move is illegal
 		4. "wrong" - if the winner is decided, should use /getResult
  
  -----------------

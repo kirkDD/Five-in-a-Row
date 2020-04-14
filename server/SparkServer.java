@@ -5,6 +5,10 @@ import spark.Spark;
 import spark.Filter;
 
 import java.util.HashMap;
+import java.util.*;
+
+import com.google.gson.Gson;
+import com.google.gson.*;
 
 
 public class SparkServer {
@@ -33,11 +37,42 @@ public class SparkServer {
         ////////////////////////
 
 
-        // define the routes 
+        /////////////////
+        // initialize  //
+        /////////////////
+        Gson gson = new Gson();
+        FiveInARowGame game = new FiveInARowGame(100);
+
+
+        // refault 
         get("/", (req, res) -> {
-        	return "Hello World"; 
+        	return "hello world"; 
         });
 
+
+        // get board 
+        get("/getGameBoard", (req, res) -> {
+            res.body(gson.toJson(game.getBoard()));
+            res.type("application/json");
+            return "";
+        });
+
+        // make a move 
+        post("/makeMove", (req, res) -> {
+            // Type type = new TypeToken<List<Integer>>(){}.getType();
+            String result = "";
+            try {
+                System.out.println("In makeMove");
+                System.out.println(req.headers());
+                System.out.println(req.body());
+                List<Integer> aList = gson.fromJson(req.body(), new ArrayList<Integer>().getClass());
+                System.out.println(aList.size());
+                result = game.makeMove(aList.get(0), aList.get(1), aList.get(2));
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            return result;
+        });
 
 	}
 }
