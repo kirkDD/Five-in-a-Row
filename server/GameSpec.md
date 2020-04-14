@@ -54,3 +54,15 @@ See the winner
 		
 		1. "won"
 		2. "lost"
+
+-----------------
+
+### /reset
+Reset the game
+ - Request (none)
+			
+ - Response (text)
+	>response.text()
+		
+		1. "good", the game is reset
+		2. "bad", the game is not reset somehow

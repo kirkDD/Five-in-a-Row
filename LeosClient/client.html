@@ -4,7 +4,10 @@
 	<title>Leo's Bot</title>
 </head>
 <body>
-	<button onclick="httpReq()"></button>
+	<button onclick="httpReq()">httpReq</button>
+	<button onclick="rootReq()">rootReq</button>
+	<button onclick="getBoard()">getBoard</button>
+	<button onclick="makeMoveReactWay()">makeMoveReactWay</button>
 
 	<script type="text/javascript">
 		var serverURL = "http://localhost:4567";
@@ -22,6 +25,35 @@
 			  document.body.append(httpReq.responseText);
 			}
 		}
+
+
+		async function rootReq() {
+			await fetch(serverURL)
+	            .then(response => response.text())
+	            .then(data => console.log(data));
+		}
+
+		async function getBoard() {
+    		var promise = await fetch(serverURL + getBoardURL);
+	    	if (!promise.ok) {
+	    		console.log(promise);
+	    	}
+    		var response = await promise.json();
+    		console.log(response);
+    		return response;
+    	}
+
+		makeMoveReactWay = async() => {
+        	await fetch(serverURL + makeMoveURL,
+            {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify([-1, 1, 1])
+			})
+            .then(response => response.text())
+            .then(data => console.log(data));
+        }
+
 	</script>
 </body>
 </html>

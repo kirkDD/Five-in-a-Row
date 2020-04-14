@@ -28,8 +28,10 @@ public class SparkServer {
             @Override
             public void handle(Request request, Response response) {
                 corsHeaders.forEach(response::header);
-                System.out.println(request);
-                System.out.println(response);
+                System.out.println("___________________");
+                System.out.println(request.headers());
+                System.out.println(response.body());
+                System.out.println("___________________");
             }
         };
         Spark.afterAfter(filter); // Applies this filter even if there's a halt() or exception.
@@ -43,7 +45,7 @@ public class SparkServer {
         // initialize  //
         /////////////////
         Gson gson = new Gson();
-        FiveInARowGame game = new FiveInARowGame(100);
+        FiveInARowGame game = new FiveInARowGame(40);
 
 
         // refault 
@@ -60,6 +62,7 @@ public class SparkServer {
         });
 
         // make a move 
+        // POST method is not working locally
         post("/makeMove", (req, res) -> {
             // Type type = new TypeToken<List<Integer>>(){}.getType();
             String result = "";
@@ -74,6 +77,12 @@ public class SparkServer {
                 System.out.println(e);
             }
             return result;
+        });
+
+
+        // reset game 
+        get("/reset", (req, res) -> {
+            return game.reset();
         });
 
 	}
