@@ -107,7 +107,7 @@ public class SparkServer {
 
         // get winner
         // return the player id
-        get("/result", (req, res) -> {
+        get("/getResult", (req, res) -> {
             // an int 
             res.body(gson.toJson(game.getResult()));
             res.type("application/json");

@@ -1,37 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Leo's Bot</title>
+	<title>Leo's Bot Test</title>
 </head>
 <body>
-	<button onclick="httpReq()">httpReq</button>
-	<button onclick="rootReq()">rootReq</button>
+	<button onclick="rootReq()">Hello Call</button>
+
+	<button onclick="reset()">Reset</button>
 	<button onclick="getBoard()">getBoard</button>
-	<button onclick="makeMoveReactWay()">makeMoveReactWay</button>
+	<button onclick="getResult()">getResult</button>
 
-	<button onclick="GETMakeMove(1)">Move 1</button>
-	<button onclick="GETMakeMove(-1)">Move -1</button>
+	<button onclick="GETMakeMove(1, 1, 1)">Move 1</button>
+	<button onclick="GETMakeMove(1, 2, -1)">Move -1</button>
 
-	<button onclick="reset()">reset</button>
 
 	<script type="text/javascript">
 		var serverURL = "http://localhost:4567";
 		var makeMoveURL = "/makeMove";
 		var getBoardURL = "/getGameBoard";
 		var resetURL = "/reset";
-		function httpReq() {
-			var httpReq = new XMLHttpRequest();
-			httpReq.open("POST", serverURL + makeMoveURL, true);
-			httpReq.setRequestHeader("Content-Type", "application/json");
-			var str = JSON.stringify([-1, 1, 1]);
-			httpReq.send(str);
-			httpReq.onreadystatechange = (e) => {
-			  console.log(httpReq.responseText);
-			  console.log(e);
-			  document.body.append(httpReq.responseText);
-			}
-		}
+		var getResultURL = "/getResult";
 
+		async function getResult() {
+			await fetch(serverURL + getResultURL)
+				.then(res => res.json())
+				.then(data => console.log(data));
+		}
 
 		async function rootReq() {
 			await fetch(serverURL)
@@ -49,7 +43,7 @@
     		return response;
     	}
 
-		makeMoveReactWay = async() => {
+		async function makeMoveReactWay() {
         	await fetch(serverURL + makeMoveURL,
             {
                 method: "POST",
@@ -60,9 +54,8 @@
             .then(data => console.log(data));
         }
 
-        async function GETMakeMove(player) {
-        	var uri = encodeURI(serverURL + makeMoveURL + "?x=12&y=12&player=1");
-        	console.log(uri);
+        async function GETMakeMove(x, y, player) {
+        	var uri = encodeURI(serverURL + makeMoveURL + "?x=" + x + "&y=" + y + "&player=" + player);
     		var promise = await fetch(uri);
     		if (!promise.ok) {
 	    		console.log(promise);
@@ -79,7 +72,6 @@
 	    	}
     		var response = await promise.text();
     		console.log(response);
-    		return response;
         }
 
 	</script>
