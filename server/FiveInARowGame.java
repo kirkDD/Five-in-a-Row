@@ -1,7 +1,7 @@
 
 
 import java.lang.Math;
-
+import java.lang.StringBuilder;
 
 public class FiveInARowGame {
   
@@ -13,7 +13,10 @@ public class FiveInARowGame {
 	// 0 - cannot play anymore, maybe a win?
 	private int turn;
 
-	// the game? 
+	// 0 -> playing
+	// 1 -> 1 wins
+	// -1 -> -1 wins
+	// 2 -> draw
 	private int gameState;
 
 
@@ -32,6 +35,8 @@ public class FiveInARowGame {
 		System.out.println(game.makeMove(5, 3, -1));	
 		System.out.println(game.makeMove(0, 4, 1));	
 		System.out.println(game.makeMove(5, 4, -1));
+		System.out.println(game.getResult());
+		System.out.println(game);
 	}
 
 	/**
@@ -43,6 +48,7 @@ public class FiveInARowGame {
 	public FiveInARowGame(int boardSize) {
 		board = new int[boardSize][boardSize];
 		turn = 1;
+		gameState = 0;
 	}
 
 	/**
@@ -56,6 +62,7 @@ public class FiveInARowGame {
 		// reset no matter what
 		board = new int[board.length][board.length];
 		turn = 1;
+		gameState = 0;
 		return "good";
 	}
 
@@ -68,6 +75,14 @@ public class FiveInARowGame {
 	}
 
 	/**
+	 * return the gameState
+	 * @return int
+	 */
+	public int getResult() {
+		return this.gameState;
+	}
+
+	/**
 	 * make a move in game
 	 * @param  player int either 1 or -1
 	 * @param  x      [description]
@@ -75,29 +90,49 @@ public class FiveInARowGame {
 	 * @return        a status code in string
 	 */
 	public String makeMove(int x, int y, int player) {
-		if (turn == 0) {
+		if (turn == 0 || gameState != 0) {
 			return "wrong";
+		}
+		if (x > board.length || y > board[0].length) {
+			return "bad";
 		}
 		if (board[x][y] == 0 && turn == player) {
 			board[x][y] = player;
 			turn = -turn;
 			this.updateGameState();
 			return "good";
-		} else {
-			return "bad";
-		}
+		} 
+		return "bad";
 	}
 
 	/**
 	 * see if someone wins somehow
-	 * @modifies 
+	 * @modifies gameState
 	 */
 	private void updateGameState() {
 		// check if -1 wins O(4n)
+		if (this.gameState != 0) {
+			return;
+			// game is not going
+		} 
 		if (checkGridFor(-1)) {
-
+			this.gameState = -1;
+		} else if (checkGridFor(1)) {
+			this.gameState = 1;
+		} else {
+			// check draw
+			for (int i = 0; i < board.length; i++) {
+				for (int j = 0; j < board[0].length; j++) {
+					if (board[i][j] == 0) {
+						// there are empty space to play
+						return;
+					}
+				}
+			}
+			this.gameState = 2;
 		}
 	}
+	// see if player wins
 	private boolean checkGridFor(int player) {
 		// check vertical and horizontal
 		for (int i = 0; i < board.length; i++) {	// rows?
@@ -117,9 +152,9 @@ public class FiveInARowGame {
 			int i = (j == 0) ? index : 0;
 			int countA = 0;
 			int countB = 0;
-			for (; i < board.length && j < board.length; i++, j++) {
+			for (; i < board.length && j < board[0].length; i++, j++) {
 				countA = (board[i][j] == player)? countA + 1 : 0; 
-				countB = (board[board.length - i][j] == player)? countB + 1 : 0; 
+				countB = (board[board.length - 1 - i][j] == player)? countB + 1 : 0; 
 				if (countA == 5 || countB == 5) {
 					return true;
 				}
@@ -131,5 +166,38 @@ public class FiveInARowGame {
 
 
 
+	///////////////////
+	// for debugging //
+	///////////////////
+	@Override
+	public String toString() {
+		StringBuilder s = new StringBuilder();
 
+		s.append("******************\n");
+		// add info
+		s.append("gameState: " + this.gameState + "\n");
+		s.append("turn: " + this.turn + "\n");
+
+		// add the board
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board.length; j++) {
+				switch (board[i][j]) {
+					case 0:
+						s.append('_');
+						break;
+					case 1:
+						s.append('x');
+						break;
+					case -1:
+						s.append('o');
+						break;
+					default:
+						System.out.println("what the heck is no the board?");
+				}
+			}
+			s.append("\n");
+		}
+		s.append("******************\n");
+		return s.toString();
+	}
 }

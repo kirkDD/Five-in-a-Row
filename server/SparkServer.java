@@ -85,5 +85,9 @@ public class SparkServer {
             return game.reset();
         });
 
+
+        // get winner
+        
+
 	}
 }
