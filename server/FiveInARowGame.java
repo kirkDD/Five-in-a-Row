@@ -90,7 +90,7 @@ public class FiveInARowGame {
 	 * @return        a status code in string
 	 */
 	public String makeMove(int x, int y, int player) {
-		System.out.println(player + " making move " + x + ", " + y);
+		System.out.println("Game: " + player + " making move " + x + ", " + y);
 		if (turn == 0 || gameState != 0) {
 			return "wrong";
 		}

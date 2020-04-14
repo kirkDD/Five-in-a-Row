@@ -28,11 +28,8 @@ public class SparkServer {
             @Override
             public void handle(Request request, Response response) {
                 corsHeaders.forEach(response::header);
-                System.out.println("_________communication__________");
+                System.out.print("___applying header___");
                 System.out.println(request.url());
-                System.out.println("Response is: ");
-                System.out.println(response.body());
-                System.out.println("______________end_______________");
             }
         };
         Spark.afterAfter(filter); // Applies this filter even if there's a halt() or exception.
