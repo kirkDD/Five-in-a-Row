@@ -39,8 +39,9 @@ Make a move in the game
 		2. "bad" - if it's not the player's turn or the move is illegal
 		4. "wrong" - if the winner is decided, should use /getResult
  
- -----------------
- ### /getResult
+-----------------
+
+### /getResult
 See the winner
  - Request (JSON)
 	 body should be player id 

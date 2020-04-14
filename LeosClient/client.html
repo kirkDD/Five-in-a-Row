@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leo's Bot</title>
+</head>
+<body>
+	<button onclick="httpReq()"></button>
+
+	<script type="text/javascript">
+		var serverURL = "http://localhost:4567";
+		var makeMoveURL = "/makeMove";
+		var getBoardURL = "/getGameBoard";
+		function httpReq() {
+			var httpReq = new XMLHttpRequest();
+			httpReq.open("POST", serverURL + makeMoveURL, true);
+			httpReq.setRequestHeader("Content-Type", "application/json");
+			var str = JSON.stringify([-1, 1, 1]);
+			httpReq.send(str);
+			httpReq.onreadystatechange = (e) => {
+			  console.log(httpReq.responseText);
+			  console.log(e);
+			  document.body.append(httpReq.responseText);
+			}
+		}
+	</script>
+</body>
+</html>
