@@ -79,15 +79,44 @@ public class SparkServer {
             return result;
         });
 
+        // second make move support get
+        get("/makeMove", (req, res) -> {
+            String xStr = req.queryParams("x");
+            String yStr = req.queryParams("y");
+            String playerStr = req.queryParams("y");
+            if (xStr == null || yStr == null || playerStr == null) {
+                return "Missing params, need x, y, player";
+            }
+            int x;
+            int y;
+            int player;
+            try {
+                x = Integer.parseInt(xStr);
+                y = Integer.parseInt(yStr);
+                player = Integer.parseInt(playerStr);
+            } catch (Exception e) {
+                System.out.println("Error parsing int");
+                System.out.println(e);
+                return e.toString();
+            }
+            return game.makeMove(x, y, player);
+        });
+
+
+        // get winner
+        // return the player id
+        get("/result", (req, res) -> {
+            // an int 
+            res.body(gson.toJson(game.getResult()));
+            res.type("application/json");
+            return "";
+        });
+
 
         // reset game 
         get("/reset", (req, res) -> {
             return game.reset();
         });
-
-
-        // get winner
-        
 
 	}
 }

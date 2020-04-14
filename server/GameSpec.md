@@ -1,9 +1,11 @@
+
 # How to play the game
 
 ## Talking to server via HTTP requests
 
 ### /
 The default URL
+- Request (none)
 - Response (text)
 	> response.text()
 	
@@ -12,6 +14,7 @@ The default URL
 ---------------
 ### /getGameBoard
 Obtain the game's current state
+ - Request (none)
 - Response (JSON) 
 
 	> response.json() 
@@ -26,11 +29,18 @@ Obtain the game's current state
 
 ### /makeMove
 Make a move in the game
-- Request (JSON)
-  body should be a JSON string with this structure
-	>JSON.stringify([ position x, position y, player id ])	
+- Request 
+	1. POST (JSON)
+		>JSON.stringify([ position x, position y, player id ])	
+		body should be a JSON string with this structure
 
-		the player id is either 1 or -1 
+			the player id is either 1 or -1 
+	
+	2. GET (EncodeURI)
+		Supply three arguments x, y, player
+			
+			var uri = "?x=12&y=12&player=-1"
+			encodeURI(uri)
 
 - Response (text)
 	> response.text()
@@ -42,18 +52,16 @@ Make a move in the game
 -----------------
 
 ### /getResult
-See the winner
- - Request (JSON)
-	 body should be player id 
-	>JSON.stringify(1)
-			
-		the player id is either 1 or -1 
-			
- - Response (text)
-	>response.text()
+See the current game state
+ - Request (none)
+ - Response (JSON)
+	>response.json()
 		
-		1. "won"
-		2. "lost"
+		the game state:
+		0 -> game is still going
+		1 -> player 1 won
+		-1 -> player -1 won
+		2 -> draw
 
 -----------------
 
