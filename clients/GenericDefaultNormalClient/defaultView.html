@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Play!</title>
+	<style type="text/css">
+		* {
+			box-sizing: border-box;
+		}
+		#chessBoard {
+			margin: auto;
+			line-height: 0;
+		}
+
+		.theSmallerBoxInsideTheBoard {
+			display: inline-block;
+			margin: 0;
+			padding: 0;
+			border: 1px solid black;
+			transition: background-color 0.3s;
+		}
+		.theSmallerBoxInsideTheBoard:hover {
+			background-color: rgba(0, 0, 0, 0.4);
+		}
+
+	</style>
+</head>
+<body>
+	<p>View for the mondane users</p>
+	<div id="messageBoard"></div>
+	<div id="chessBoard"></div>
+	<button onclick="makeMove()">Move</button>
+
+	<button onclick="switchPlayer()">Switch</button>
+
+	<script type="text/javascript">
+		var serverURL = "http://localhost:4567";
+		var makeMoveURL = "/makeMove";
+		var getBoardURL = "/getGameBoard";
+		var getBoardAsListURL = "/getGameBoardAsList";
+		var resetURL = "/reset";
+		var getResultURL = "/getResult";
+
+		var playerID = 1;
+		var opponentID = -1;
+
+		function switchPlayer() {
+			var temp = playerID;
+			playerID = opponentID;
+			opponentID = temp;
+		}
+
+		var boardSize = 700;
+		var messageBoard = document.getElementById("messageBoard");
+		var chessBoard = document.getElementById("chessBoard");
+		chessBoard.style.width = boardSize + "px";
+		chessBoard.style.height = boardSize + "px";
+
+		// check if server is up
+		var serverIsUP = false;
+		try {
+			fetch(serverURL)
+				.then(response => response.text())
+				.then(data => console.log(data));
+			serverIsUP = true;
+		} catch (e) {
+			messageBoard.innerText = "Server is not running, no game";
+			console.log(e);
+		}
+
+		// get the board size
+		fetch(serverURL + getBoardURL)
+			.then(response => response.json())
+			.then(data => {generateChessBoxes(data)});
+		
+		var selectedTileX = -1;
+		var selectedTileY = -1;
+
+		function selectTile(i, j) {
+			var id = "tile" + i + "_" + j;
+			var thisOne = document.getElementById(id);
+			// check if i j is on other's piece
+			if (thisOne.style.backgroundColor == "red" || thisOne.style.backgroundColor == "blue") {
+				return;
+			}
+			// i j are valid
+			if (i == selectedTileX && j == selectedTileY) {
+				// selecting the same tile -> deselect
+				thisOne.style.backgroundColor = "";
+				selectedTileX = -1;
+				selectedTileY = -1;
+			} else {
+				thisOne.style.backgroundColor = "green";
+				if (selectedTileX >= 0) {
+					// remove the color of the last one
+					var lastOne = document.getElementById("tile" + selectedTileX + "_" + selectedTileY);
+					if (lastOne.style.backgroundColor != "red" && lastOne.style.backgroundColor != "blue") {
+						lastOne.style.backgroundColor = "";
+					}
+				}
+				selectedTileX = i;
+				selectedTileY = j;
+			}
+		}
+
+		async function makeMove() {
+			if (selectedTileX < 0) {
+    			messageBoard.innerText = "Have not select a place";
+    			return;
+			}
+			var uri = encodeURI(serverURL + makeMoveURL + "?x=" + selectedTileX 
+				+ "&y=" + selectedTileY + "&player=" + playerID);
+    		var promise = await fetch(uri);
+    		if (!promise.ok) {
+	    		console.log("Badbadbad");
+	    		console.log(promise);
+	    	}
+	    	var response = await promise.json();
+    		if (response == "good") {
+    			messageBoard.innerText = "Move at " + selectedTileX + " " + selectedTileY;
+    			// clear the selected tile
+	    		var tile = document.getElementById("tile" + selectedTileX + "_" + selectedTileY);
+	    		if (tile.style.backgroundColor == "green") {
+	    			tile.style.backgroundColor == "";
+	    		}
+    			updateBoard();
+    		} else {
+    			messageBoard.innerText = "Cannot make that move";
+    		}
+		}
+
+		async function updateBoard() {
+			var promise = await fetch(serverURL + getBoardAsListURL);
+	    	if (!promise.ok) {
+	    		console.log(promise);
+	    	}
+    		var playerMap = await promise.json();
+    		var myList = playerMap[playerID];
+    		// console.log(playerMap);
+    		// console.log(myList);
+    		for (var i = 0; i < myList.length; i++) {
+    			var xpos = myList[i][0];
+    			var ypos = myList[i][1];
+    			var tile = document.getElementById("tile" + xpos + "_" + ypos);
+    			tile.style.backgroundColor = "blue";
+    		}
+    		var oppoList = playerMap[opponentID];
+    		for (var i = 0; i < oppoList.length; i++) {
+    			var xpos = oppoList[i][0];
+    			var ypos = oppoList[i][1];
+    			var tile = document.getElementById("tile" + xpos + "_" + ypos);
+    			tile.style.backgroundColor = "red";
+    		}
+    		
+
+		}
+
+		function generateChessBoxes(arr) {
+			// build the chess board
+			var boxSize = boardSize / arr.length;
+			console.log(boardSize);
+			for (var i = 0; i < arr.length; i++) {
+				for (var j = 0; j < arr.length; j++) {
+					var span = document.createElement("div");
+					chessBoard.appendChild(span);
+					span.id = "tile" + i + "_" + j;
+					span.className = "theSmallerBoxInsideTheBoard";
+					span.style.width = boxSize + "px";
+					span.style.height = boxSize + "px";
+					// add function to select
+					(function () {
+						var row = i;
+						var col = j;
+						span.addEventListener("click", function() {selectTile(row, col)});
+					}()
+					);
+				}
+			}
+		}
+
+	
+
+
+
+
+	</script>
+
+</body>
+</html>

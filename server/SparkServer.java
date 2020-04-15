@@ -45,7 +45,7 @@ public class SparkServer {
         // initialize  //
         /////////////////
         Gson gson = new Gson();
-        FiveInARowGame game = new FiveInARowGame(40);
+        FiveInARowGame game = new FiveInARowGame(20);
 
 
         // refault 
@@ -94,7 +94,9 @@ public class SparkServer {
             String yStr = req.queryParams("y");
             String playerStr = req.queryParams("player");
             if (xStr == null || yStr == null || playerStr == null) {
-                return "Missing params, need x, y, player";
+                res.body(gson.toJson("Missing params, need x, y, player"));
+                res.type("application/json");
+                return "";
             }
             int x;
             int y;
