@@ -70,23 +70,7 @@ public class SparkServer {
 
         // make a move 
         // POST method is not working locally
-        post("/makeMove", (req, res) -> {
-            // Type type = new TypeToken<List<Integer>>(){}.getType();
-            String result = "";
-            try {
-                System.out.println("In makeMove");
-                System.out.println(req.headers());
-                System.out.println(req.body());
-                List<Integer> aList = gson.fromJson(req.body(), new ArrayList<Integer>().getClass());
-                System.out.println(aList.size());
-                result = game.makeMove(aList.get(0), aList.get(1), aList.get(2));
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-            res.body(gson.toJson(result));
-            res.type("application/json");
-            return "";
-        });
+        // so removed, to hard
 
         // second make move support get
         get("/makeMove", (req, res) -> {
@@ -108,7 +92,9 @@ public class SparkServer {
             } catch (Exception e) {
                 System.out.println("Error parsing int");
                 System.out.println(e);
-                return e.toString();
+                res.body(gson.toJson(e.toString()));
+                res.type("application/json");
+                return "";
             }
             res.body(gson.toJson(game.makeMove(x, y, player)));
             res.type("application/json");

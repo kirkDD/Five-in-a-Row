@@ -31,6 +31,7 @@
 	<button onclick="makeMove()">Move</button>
 
 	<button onclick="switchPlayer()">Switch</button>
+	<div id="playerID"></div>
 
 	<script type="text/javascript">
 		var serverURL = "http://localhost:4567";
@@ -43,10 +44,15 @@
 		var playerID = 1;
 		var opponentID = -1;
 
+		var playerIDElement = document.getElementById("playerID");
+		playerIDElement.innerText = playerID;
 		function switchPlayer() {
 			var temp = playerID;
 			playerID = opponentID;
 			opponentID = temp;
+			playerIDElement.innerText = playerID;
+			// also update view
+			
 		}
 
 		var boardSize = 700;
@@ -72,6 +78,8 @@
 			.then(response => response.json())
 			.then(data => {generateChessBoxes(data)});
 		
+		updateBoard();
+
 		var selectedTileX = -1;
 		var selectedTileY = -1;
 
@@ -79,11 +87,11 @@
 			var id = "tile" + i + "_" + j;
 			var thisOne = document.getElementById(id);
 			// check if i j is on other's piece
-			if (thisOne.style.backgroundColor == "red" || thisOne.style.backgroundColor == "blue") {
+			if (thisOne.style.backgroundColor === "red" || thisOne.style.backgroundColor === "blue") {
 				return;
 			}
 			// i j are valid
-			if (i == selectedTileX && j == selectedTileY) {
+			if (i === selectedTileX && j === selectedTileY) {
 				// selecting the same tile -> deselect
 				thisOne.style.backgroundColor = "";
 				selectedTileX = -1;
@@ -115,12 +123,13 @@
 	    		console.log(promise);
 	    	}
 	    	var response = await promise.json();
-    		if (response == "good") {
+    		console.log(response);
+    		if (response === "good") {
     			messageBoard.innerText = "Move at " + selectedTileX + " " + selectedTileY;
     			// clear the selected tile
 	    		var tile = document.getElementById("tile" + selectedTileX + "_" + selectedTileY);
-	    		if (tile.style.backgroundColor == "green") {
-	    			tile.style.backgroundColor == "";
+	    		if (tile.style.backgroundColor === "green") {
+	    			tile.style.backgroundColor === "";
 	    		}
     			updateBoard();
     		} else {

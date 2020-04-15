@@ -71,6 +71,8 @@ public class FiveInARowGame {
 		turn = 1;
 		gameState = 0;
 		boardAsList.clear();
+		boardAsList.put(1, new ArrayList<int[]>());
+		boardAsList.put(-1, new ArrayList<int[]>());
 		return "good";
 	}
 
@@ -115,6 +117,7 @@ public class FiveInARowGame {
 			board[x][y] = player;
 			turn = -turn;
 			boardAsList.get(player).add(new int[]{x, y});
+			System.out.println("move played");
 			this.updateGameState();
 			return "good";
 		} 
