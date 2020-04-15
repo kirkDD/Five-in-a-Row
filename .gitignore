@@ -4,3 +4,7 @@
 
 # makefiles
 makefile
+
+
+#java keys
+*.jks

@@ -10,9 +10,22 @@ import java.util.*;
 import com.google.gson.Gson;
 import com.google.gson.*;
 
+
+//⚔
+//I am on phone and I will try to nudge you in the rght direction. 
+//You need to follow the following 3 steps mentioned in Bulletproof SSL and TLS, pages 436-439:
+// Creating a key and a self signed certificate
+// Creating a certificate signing request
+// Importing certificates
+
+
+
 // all response are JSON
 public class SparkServer {
 	public static void main(String[] args) {
+        // HTTPS instead of HTTP not working
+        // secure("KeyStore.jks", "123456", null, null);
+
 
 		///////////////////////
 		// CORSFILTER stuff  //
