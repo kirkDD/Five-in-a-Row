@@ -34,7 +34,7 @@
 	<div id="playerID"></div>
 
 	<script type="text/javascript">
-		var serverURL = "http://localhost:4567";
+		var serverURL = "http://24.22.183.78:4567";
 		var makeMoveURL = "/makeMove";
 		var getBoardURL = "/getGameBoard";
 		var getBoardAsListURL = "/getGameBoardAsList";
@@ -78,7 +78,8 @@
 			.then(response => response.json())
 			.then(data => {generateChessBoxes(data)});
 		
-		updateBoard();
+		setInterval(updateBoard, 1000);
+
 
 		var selectedTileX = -1;
 		var selectedTileY = -1;
