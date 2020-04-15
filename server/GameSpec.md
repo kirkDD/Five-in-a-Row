@@ -2,7 +2,7 @@
 
 # How to play the game
 
-## Talking to server via HTTP requests
+## [Talking to server via HTTP requests](https://www.w3schools.com/tags/ref_httpmethods.asp learn more)
 
 ### /
 The default URL
