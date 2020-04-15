@@ -1,8 +1,8 @@
 
 
-# How to play the game
-
-## [Talking to server via HTTP requests](https://www.w3schools.com/tags/ref_httpmethods.asp "learn more")
+# How to play the game?
+Make your bot and
+## [Talk to server via HTTP requests](https://www.w3schools.com/tags/ref_httpmethods.asp "learn more")
 
 ### /
 The default URL
