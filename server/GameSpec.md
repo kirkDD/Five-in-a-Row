@@ -42,13 +42,7 @@ Obtain the game's current board as Map<Integer, List<int[2]>>
 ### /makeMove
 Make a move in the game
 - Request 
-	1. POST (JSON)
-		>JSON.stringify([ position x, position y, player id ])	
-		body should be a JSON string with this structure
-
-			the player id is either 1 or -1 
-	
-	2. GET (EncodeURI)
+	> GET (EncodeURI)
 		Supply three arguments x, y, player
 			
 			var uri = encodeURI("?x=12&y=12&player=-1")
