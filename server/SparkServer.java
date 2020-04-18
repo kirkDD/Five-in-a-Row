@@ -132,5 +132,12 @@ public class SparkServer {
             return "";
         });
 
+        // return whose turn it is 
+        get("/whoseTurn", (req, res) -> {
+            res.body(gson.toJson(game.nextPlayer()));
+            res.type("test/json");
+            return "";
+        });
+
 	}
 }

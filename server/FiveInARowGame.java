@@ -221,4 +221,8 @@ public class FiveInARowGame {
 	}
 
 
+	public int nextPlayer() {
+		return this.turn;
+	}
+
 }

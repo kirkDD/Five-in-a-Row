@@ -79,3 +79,16 @@ Reset the game
 		
 		1. "good", the game is reset
 		2. "bad", the game is not reset somehow
+
+
+-----------------
+
+### /whoseTurn
+Get the player id of the play to play next
+ - Request (none)
+			
+ - Response (JSON)
+	>response.json()
+		
+		1. -1
+		2. 1
