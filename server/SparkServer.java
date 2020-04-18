@@ -23,7 +23,7 @@ import com.google.gson.*;
 // all response are JSON
 public class SparkServer {
 	public static void main(String[] args) {
-        // HTTPS instead of HTTP not working
+        // HTTPS instead of HTTP, not working
         // secure("KeyStore.jks", "123456", null, null);
 
 
