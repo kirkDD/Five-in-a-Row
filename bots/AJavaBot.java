@@ -14,6 +14,11 @@ import com.google.gson.reflect.TypeToken;
 // map
 import java.util.*;
 
+
+/**∮∯∰
+ * Main issue: static eval is not correct/good
+ */
+
 public class AJavaBot {
 	
 	/////////////////
@@ -47,7 +52,7 @@ public class AJavaBot {
 			return;
 		}
 
-		// debug 
+		// debug seems that static eval is working
 		// while (true) {
 		// 	Map<Integer, List<int[]>> boardMap = getBoardAsMap();
 		// 	System.out.println(staticEval(mapToBoard(boardMap, 1)));
@@ -100,23 +105,14 @@ public class AJavaBot {
 			System.out.println("GET: " + response.body());
 			return response.body();
 		} catch (Exception e) {
-			System.out.println(e);
+			System.out.println("> " + e);
 			return "";
 		}
 	}
 	// check server
 	private static boolean serverRunning()  throws IOException, InterruptedException {
-		try {
-			HttpRequest request = HttpRequest.newBuilder()
-			    .uri(URI.create(BASE_LINK))
-			    .build();
-
-			HttpResponse<String> response = CLIENT.send(request,
-				HttpResponse.BodyHandlers.ofString());
-			
-			System.out.println(response.body());
-		} catch (Exception e) {
-			System.out.println(e);
+		String response = httpGET("");
+		if (response.length() == 0) {
 			return false;
 		}
 		return true;
@@ -200,7 +196,7 @@ public class AJavaBot {
 		return result;
 	}
 
-	// helper: print char[][]
+	// helper: print char[][] visually
 	private static void printCharArr(char[][] a) {
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a[0].length; j++) {
@@ -221,12 +217,12 @@ public class AJavaBot {
 	}
 
 
-
+	// main method
 	private static int[] makeAMove(char[][] currBoard) {
 		System.out.println("Board size " + currBoard.length + " " + currBoard[0].length);
 		
 		// run a depth 5 MiniMax?
-		int[] moveScorePair = miniMax(currBoard, true, 3, -9999999, true);
+		int[] moveScorePair = miniMax(currBoard, true, 4, -9999999, true);
 
 		System.out.println("Best score is " + moveScorePair[2]);
 		return new int[]{moveScorePair[0], moveScorePair[1]};
@@ -253,11 +249,12 @@ public class AJavaBot {
 					} else {
 						board[i][j] = THEM;
 					}
+					
 					int[] newScorePair;
+
 					if (remainLevel == 0) {
 						newScorePair = new int[]{i, j, staticEval(board)};
-					} else {
-						// recurse to get the best move
+					} else {	// recurse to get the best move
 						newScorePair = miniMax(board, !maximize, remainLevel - 1, moveScorePair[2], false);
 					}
 					if (maximize) {
@@ -283,12 +280,15 @@ public class AJavaBot {
 							moveScorePair = newScorePair;
 						}
 					}
-					// undo the move
-					board[i][j] = EMPTYCHAR;
-					if (isRoot) {
-						System.out.println(moveScorePair[0] + " " + moveScorePair[1] + " " + moveScorePair[2]);
+
+					if (isRoot && newScorePair[2] > -10000) {
+						System.out.println(i + " " + j);
+						System.out.println(newScorePair[0] + " " + newScorePair[1] + " " + newScorePair[2]);
 						printCharArr(board);
 					}
+
+					// undo the move
+					board[i][j] = EMPTYCHAR;
 				}
 			}
 		}
@@ -310,10 +310,10 @@ public class AJavaBot {
 		// printCharArr(b);
 		// if win return 100, lost -100
 		if (checkGridFor(ME, b)) {
-			return 10000;
+			return 999999;
 		}
 		if (checkGridFor(THEM, b)) {
-			return -10000;
+			return -999999;
 		}
 		// no winner what to do ?
 		// count 4, 3, 2, in a row
