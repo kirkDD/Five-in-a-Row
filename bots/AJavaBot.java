@@ -70,9 +70,10 @@ public class AJavaBot {
 				// System.out.println(staticEval());
 				COUNT = 0;
 				int[] move = makeAMove(mapToBoard(boardMap, 1));
-				System.out.println(move[0] + " " + move[1]);
 				int x = move[0] + sizeOffSetX;
 				int y = move[1] + sizeOffSetY;
+				System.out.println("Adding " + sizeOffSetX + " " + sizeOffSetY + " ");
+				System.out.println("Final move is " + x + " " + y + " ");
 				// make the move
 				httpGET("makeMove" + "?x=" + x + "&y=" + y + "&player=" + ID);
 			} else {
@@ -189,9 +190,9 @@ public class AJavaBot {
 		} 
 
 		// debug
-		// System.out.println("_____________");
-		// printCharArr(result);
-		// System.out.println("_____________");
+		System.out.println("_____________");
+		printCharArr(result);
+		System.out.println("_____________");
 
 		return result;
 	}
@@ -220,12 +221,16 @@ public class AJavaBot {
 	// main method
 	private static int[] makeAMove(char[][] currBoard) {
 		System.out.println("Board size " + currBoard.length + " " + currBoard[0].length);
-		
+		// printCharArr(currBoard);
+		// System.out.println("+++++++++++++++++++");
 		// run a depth 5 MiniMax?
-		int[] moveScorePair = miniMax(currBoard, true, 4, -9999999, true);
-
-		System.out.println("Best score is " + moveScorePair[2]);
-		return new int[]{moveScorePair[0], moveScorePair[1]};
+		// int[] m = miniMax(currBoard, true, 4, -9999999, true);
+		int[] m = maxPlayer(currBoard, 2);
+		System.out.println("Best score is " + m[0] + " " + m[1] + " " + m[2]);
+		currBoard[m[0]][m[1]] = ME;
+		printCharArr(currBoard);
+		System.out.println("+++++++++++++++++++");
+		return new int[]{m[0], m[1]};
 	}
 
 	// miniMax helper
@@ -250,41 +255,49 @@ public class AJavaBot {
 						board[i][j] = THEM;
 					}
 					
-					int[] newScorePair;
+					int[] newMove;
 
 					if (remainLevel == 0) {
-						newScorePair = new int[]{i, j, staticEval(board)};
+						newMove = new int[]{i, j, staticEval(board)};
 					} else {	// recurse to get the best move
-						newScorePair = miniMax(board, !maximize, remainLevel - 1, moveScorePair[2], false);
+						newMove = miniMax(board, !maximize, remainLevel - 1, moveScorePair[2], false);
 					}
 					if (maximize) {
-						if (newScorePair[2] > otherCurrBest && ! isRoot) {
-							moveScorePair = new int[]{0, 0, 99999999};
-							// undo the move
-							board[i][j] = EMPTYCHAR;
-							return moveScorePair;
-						} 
-						if (newScorePair[2] > moveScorePair[2]) {
-							moveScorePair = newScorePair;
+						// if (newMove[2] > otherCurrBest && ! isRoot) {
+						// 	moveScorePair = new int[]{0, 0, 99999999};
+						// 	// undo the move
+						// 	board[i][j] = EMPTYCHAR;
+						// 	return moveScorePair;
+						// } 
+						if (newMove[2] > moveScorePair[2]) {
+							moveScorePair = newMove;
+							if (newMove[2] == 999999) {
+								board[i][j] = EMPTYCHAR;
+								return moveScorePair;
+							}
 						}
 					} else {
 						// min time
 						// pruning
-						if (newScorePair[2] < otherCurrBest) {
-							moveScorePair = new int[]{0, 0, -99999999};
-							// undo the move
-							board[i][j] = EMPTYCHAR;
-							return moveScorePair;
-						}
-						if (newScorePair[2] < moveScorePair[2]) {
-							moveScorePair = newScorePair;
+						// if (newMove[2] < otherCurrBest) {
+						// 	moveScorePair = new int[]{0, 0, -99999999};
+						// 	// undo the move
+						// 	board[i][j] = EMPTYCHAR;
+						// 	return moveScorePair;
+						// }
+						if (newMove[2] < moveScorePair[2]) {
+							moveScorePair = newMove;
+							if (newMove[2] == -999999) {
+								board[i][j] = EMPTYCHAR;
+								return moveScorePair;
+							}
 						}
 					}
 
-					if (isRoot && newScorePair[2] > -10000) {
-						System.out.println(i + " " + j);
-						System.out.println(newScorePair[0] + " " + newScorePair[1] + " " + newScorePair[2]);
-						printCharArr(board);
+					if (isRoot && newMove[2] > -10000) {
+						// System.out.println(i + " " + j);
+						// System.out.println(newMove[0] + " " + newMove[1] + " " + newMove[2]);
+						// printCharArr(board);
 					}
 
 					// undo the move
@@ -294,15 +307,72 @@ public class AJavaBot {
 		}
 		
 		// System.out.println(moveScorePair[2]);
+		// System.out.println("___________________");
+		// board[moveScorePair[0]][moveScorePair[1]] = ME;
+		// printCharArr(board);
 		return moveScorePair;
 	}
 
+	// maximizing player's turn
+	private static int[] maxPlayer(char[][] board, int remainLevel) {
+		int[] moveScorePair;
+		moveScorePair = new int[]{0, 0, -999999};
+		// explore all possibilities
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[0].length; j++) {
+				if (board[i][j] == EMPTYCHAR) {
+					board[i][j] = ME;
+					int[] othersMoveScorePair = minPlayer(board, remainLevel - 1);
+					if (othersMoveScorePair[2] > moveScorePair[2]) {
+						moveScorePair[0] = i;
+						moveScorePair[1] = j;
+						moveScorePair[2] = othersMoveScorePair[2];
+					}
+					board[i][j] = EMPTYCHAR;
+					if (moveScorePair[2] == 999999) {
+						return moveScorePair;	
+					}
+				}
+			}
+		}		
+		return moveScorePair;
+	}
+
+	// minimizing player
+	private static int[] minPlayer(char[][] board, int remainLevel) {
+		int[] moveScorePair;
+		moveScorePair = new int[]{0, 0, 9999999};
+		// explore all possibilities
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[0].length; j++) {
+				if (board[i][j] == EMPTYCHAR) {
+					board[i][j] = THEM;
+					int[] othersMoveScorePair = new int[3];
+					if (remainLevel < 1) {
+						othersMoveScorePair[2] = staticEval(board);
+					} else {
+						othersMoveScorePair = maxPlayer(board, remainLevel - 1); 
+					}
+					if (othersMoveScorePair[2] < moveScorePair[2]) {
+						moveScorePair[0] = i;
+						moveScorePair[1] = j;
+						moveScorePair[2] = othersMoveScorePair[2];
+					}
+					board[i][j] = EMPTYCHAR;
+					if (moveScorePair[2] == -999999) {
+						return moveScorePair;	
+					}
+				}
+			}
+		}
+		return moveScorePair;
+	}
 
 	// return the goodness of board 
 	// use ID as self
 	private static int staticEval(char[][] b) {
 		COUNT ++;
-		if (COUNT % 32768 == 0) {
+		if (COUNT % 262114 == 0) {
 			// System.out.println(b.length);
 			// System.out.println(b[0].length);
 			System.out.println(COUNT);
@@ -319,9 +389,9 @@ public class AJavaBot {
 		// count 4, 3, 2, in a row
 		int[] points = new int[6];
 		points[0] = 0;
-		points[1] = 1;
+		points[1] = 0;
 		points[2] = 10;
-		points[3] = 100;
+		points[3] = 1000;
 		points[4] = 1000;
 		points[5] = 10000;
 		int score = 0;
@@ -331,11 +401,11 @@ public class AJavaBot {
 			int countTHEM = 0;
 			for (int j = 0; j < b[0].length; j++) {
 				if (b[i][j] == ME) {
-					score -= points[countTHEM];
+					score -= points[countTHEM]/2;
 					countTHEM = 0;
 					countME ++;
 				} else if (b[i][j] == THEM) {
-					score += points[countME];
+					score += points[countME]/2;
 					countME = 0;
 					countTHEM ++;
 				} else {
@@ -356,11 +426,11 @@ public class AJavaBot {
 			int countTHEM = 0;
 			for (int j = 0; j < b[0].length; j++) {
 				if (b[j][i] == ME) {
-					score -= points[countTHEM];
+					score -= points[countTHEM]/2;
 					countTHEM = 0;
 					countME ++;
 				} else if (b[j][i] == THEM) {
-					score += points[countME];
+					score += points[countME]/2;
 					countME = 0;
 					countTHEM ++;
 				} else {
@@ -385,11 +455,11 @@ public class AJavaBot {
 			int beta = 0;
 			for (; i < b.length && j < b[0].length; i++, j++) {
 				if (b[i][j] == ME) {
-					score -= points[beta];
+					score -= points[beta]/2;
 					beta = 0;
 					alpah++;
 				} else if (b[i][j] == THEM) {
-					score += points[alpah];
+					score += points[alpah]/2;
 					alpah = 0;
 					beta++;
 				} else {
@@ -411,11 +481,11 @@ public class AJavaBot {
 			beta = 0;
 			for (; i < b.length && j < b[0].length; i++, j++) {
 				if (b[i][b[0].length - 1 - j] == ME) {
-					score -= points[beta];
+					score -= points[beta]/2;
 					beta = 0;
 					alpah++;
 				} else if (b[i][b[0].length - 1 - j] == THEM) {
-					score += points[alpah];
+					score += points[alpah]/2;
 					alpah = 0;
 					beta++;
 				} else {
